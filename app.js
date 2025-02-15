@@ -219,9 +219,16 @@ app.post("/api", async (req, res) => {
       if (x.endsWith("/")) {
         x = x.substring(0, x.length - 1)
       }
-      if (x.endsWith("/translate")) {
-        x = x.substring(0, x.length - 10)
+      
+      // 使用 URL 对象解析 URL
+      const url = new URL(x);
+      if (url.pathname.endsWith("/translate")) {
+        url.pathname = url.pathname.substring(0, url.pathname.length - 10);
       }
+
+      // 重新构建 URL
+      x = url.toString();
+      
       return x
     })
     if (apis && apis.length > 0) {
