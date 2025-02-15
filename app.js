@@ -157,6 +157,14 @@ app.post("/translate", async (req, res) => {
   while (length > 0) {
     const randomIndex = Math.floor(Math.random() * length)
     const targetURL = apis[randomIndex]
+    
+    // 清理 targetURL，确保不包含 "/translate"
+    const url = new URL(targetURL);
+    if (url.pathname.endsWith("/translate")) {
+      url.pathname = url.pathname.substring(0, url.pathname.length - 10); // 移除 "/translate"
+      targetURL = url.toString();
+    }
+    
     const fullURL = targetURL + requestURI
     console.log(`request: ${fullURL}, index: ${randomIndex} ,req: ${JSON.stringify(req.body)}`)
     try {
@@ -219,16 +227,9 @@ app.post("/api", async (req, res) => {
       if (x.endsWith("/")) {
         x = x.substring(0, x.length - 1)
       }
-      
-      // 使用 URL 对象解析 URL
-      const url = new URL(x);
-      if (url.pathname.endsWith("/translate")) {
-        url.pathname = url.pathname.substring(0, url.pathname.length - 10);
+      if (x.endsWith("/translate")) {
+        x = x.substring(0, x.length - 10)
       }
-
-      // 重新构建 URL
-      x = url.toString();
-      
       return x
     })
     if (apis && apis.length > 0) {
